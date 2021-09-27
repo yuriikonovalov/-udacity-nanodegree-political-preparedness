@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'androidx.navigation.safeargs'
 
+
 android {
     compileSdkVersion 30
     buildFeatures {
@@ -16,8 +17,13 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+
+        // API Key
+        buildConfigField "String", "GOOGLE_CIVIC_INFORMATION_API_KEY", GOOGLE_CIVIC_INFORMATION_API_KEY
+
     }
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -48,7 +54,9 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$version_constraint_layout"
 
     // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-extensions:$version_lifecycle_extensions"
+    // implementation "androidx.lifecycle:lifecycle-extensions:$version_lifecycle_extensions"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle_extensions")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$version_lifecycle_extensions")
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$version_navigation"
@@ -70,11 +78,16 @@ dependencies {
     // Glide
     implementation "com.github.bumptech.glide:glide:$version_glide"
 
-
     //Room
     implementation "androidx.room:room-runtime:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$version_room"
 
     // Location
     implementation "com.google.android.gms:play-services-location:$version_play_services_location"
+
+    // Koin
+    implementation "io.insert-koin:koin-android:$version_koin"
+
 }
