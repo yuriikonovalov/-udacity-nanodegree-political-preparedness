@@ -1,9 +1,19 @@
 package com.example.android.politicalpreparedness.election
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.android.politicalpreparedness.data.ElectionsRepository
+import com.example.android.politicalpreparedness.data.ElectionsRepositoryImpl
+import com.example.android.politicalpreparedness.network.models.Division
+import com.example.android.politicalpreparedness.network.models.Election
+import java.util.*
+
 
 //TODO: Construct ViewModel and provide election datasource
-class ElectionsViewModel: ViewModel() {
+class ElectionsViewModel(private val repository: ElectionsRepository, application: Application) : AndroidViewModel(application) {
+
 
     //TODO: Create live data val for upcoming elections
 

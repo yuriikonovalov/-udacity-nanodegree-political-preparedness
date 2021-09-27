@@ -67,7 +67,6 @@
             android:layout_height="0dp"
             android:autofillHints=""
             android:inputType="textPostalAddress"
-
             app:layout_constraintBottom_toBottomOf="@id/edittext_representative_city"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/edittext_representative_city"
