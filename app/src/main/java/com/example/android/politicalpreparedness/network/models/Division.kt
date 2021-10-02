@@ -9,3 +9,8 @@ data class Division(
         val country: String,
         val state: String
 ) : Parcelable
+
+val Division.requestAddress: String
+    get() {
+        return "${this.state}, ${this.country}"
+    }

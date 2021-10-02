@@ -10,30 +10,30 @@
         tools:context="com.example.android.politicalpreparedness.MainActivity">
 
         <ImageView
-            android:id="@+id/image_launch_logo"
+            android:id="@+id/image_logo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_normal"
             android:contentDescription="@string/launch_logo_contentDescription"
             android:src="@drawable/ballot_logo"
-            app:layout_constraintBottom_toTopOf="@+id/button_launch_upcoming_elections"
+            app:layout_constraintBottom_toTopOf="@+id/button_upcoming_elections"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button_launch_upcoming_elections"
+            android:id="@+id/button_upcoming_elections"
             style="@style/appButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_normal"
             android:text="@string/launch_elections"
-            app:layout_constraintBottom_toTopOf="@id/button_launch_representatives"
+            app:layout_constraintBottom_toTopOf="@id/button_find_representatives"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/button_launch_representatives"
+            android:id="@+id/button_find_representatives"
             style="@style/appButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

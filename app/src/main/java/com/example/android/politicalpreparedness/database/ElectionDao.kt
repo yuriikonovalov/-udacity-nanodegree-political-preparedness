@@ -3,6 +3,7 @@ package com.example.android.politicalpreparedness.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.android.politicalpreparedness.network.models.Election
+import com.example.android.politicalpreparedness.network.models.SavedElection
 
 @Dao
 interface ElectionDao {
@@ -13,7 +14,10 @@ interface ElectionDao {
 
     //Add select all election query
     @Query("SELECT * FROM election_table")
-    fun getAllElections(): LiveData<List<Election>>
+    fun observeAllElections(): LiveData<List<Election>>
+
+    @Query("SELECT * FROM election_table WHERE id IN (:idList)")
+    fun observeSavedElections(idList: List<Int>): LiveData<List<Election>>
 
     // Add select single election query
     @Query("SELECT * FROM election_table WHERE id =:electionId")

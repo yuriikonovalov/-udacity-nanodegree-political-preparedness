@@ -5,6 +5,7 @@
 
     <!-- TODO: Add node to connect Election ViewModel -->
     <data>
+
         <variable
             name="viewModel"
             type="com.example.android.politicalpreparedness.election.ElectionsViewModel" />
@@ -18,7 +19,7 @@
 
         <!-- TODO: Add Upcoming Election Recycler and Header -->
         <TextView
-            android:id="@+id/textview_election_upcoming_elections"
+            android:id="@+id/upcoming_elections_title"
             style="@style/appHeadline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,19 +29,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_election_upcoming_elections"
+            android:id="@+id/upcoming_elections_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginVertical="@dimen/margin_normal"
             app:layout_constraintBottom_toTopOf="@id/guideline_center_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_election_upcoming_elections" />
+            app:layout_constraintTop_toBottomOf="@id/upcoming_elections_title" />
 
 
         <!-- TODO: Add Saved Election Recycler and Header -->
         <TextView
-            android:id="@+id/textview_election_saved_elections"
+            android:id="@+id/saved_elections_title"
             style="@style/appHeadline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,14 +51,14 @@
             app:layout_constraintTop_toTopOf="@id/guideline_center_horizontal" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_election_saved_elections"
+            android:id="@+id/saved_elections_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginVertical="@dimen/margin_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_election_saved_elections" />
+            app:layout_constraintTop_toBottomOf="@id/saved_elections_title" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_center_horizontal"

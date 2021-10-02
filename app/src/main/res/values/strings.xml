@@ -15,6 +15,12 @@
     <string name="representative_find_my_representatives">Find my representatives</string>
     <string name="representative_use_my_location">Use my location</string>
     <string name="voter_follow_election">Follow election</string>
+    <string name="voter_unfollow_election">Unfollow election</string>
+    <string name="voter_election_information">Election Information</string>
+    <string name="voter_voting_locations">Voting Locations</string>
+    <string name="voter_ballot_information">Ballot Information</string>
+    <string name="voter_address">Mailing Address</string>
+
 
     <!-- TODO: Add necessary string values -->
 

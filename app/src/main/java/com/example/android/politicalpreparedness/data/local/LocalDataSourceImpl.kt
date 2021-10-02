@@ -9,19 +9,43 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.map
+import com.example.android.politicalpreparedness.network.models.SavedElection
 import java.lang.Exception
 
-class ElectionsLocalDataSourceImpl(database: ElectionDatabase, private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : ElectionsLocalDataSource {
-    private val electionDao = database.electionDao
+class LocalDataSourceImpl(
+        database: ElectionDatabase,
+        private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : LocalDataSource {
 
-    override fun getAllElections(): LiveData<Result<List<Election>>> {
-        return electionDao.getAllElections().map {
+    private val electionDao = database.electionDao
+    private val savedElectionDao = database.savedElectionDao
+
+    override fun observeAllElections(): LiveData<Result<List<Election>>> {
+        return electionDao.observeAllElections().map {
             Result.Success(it)
         }
     }
 
     override suspend fun saveElection(election: Election) = withContext(dispatcher) {
         electionDao.insertElection(election)
+    }
+
+    override fun observeSavedElectionIds(): LiveData<List<Int>> {
+        return savedElectionDao.observeSavedElectionIds()
+    }
+
+    override fun observeSavedElections(idList: List<Int>): LiveData<Result<List<Election>>> {
+        return electionDao.observeSavedElections(idList).map {
+            Result.Success(it)
+        }
+    }
+
+    override fun observeSavedId(electionId: Int): LiveData<Int?> {
+        return savedElectionDao.observeId(electionId)
+    }
+
+    override suspend fun insertSavedElection(savedElection: SavedElection) = withContext(dispatcher) {
+        savedElectionDao.insertSavedElection(savedElection)
     }
 
     override suspend fun getElectionById(electionId: Int): Result<Election> {
@@ -48,6 +72,12 @@ class ElectionsLocalDataSourceImpl(database: ElectionDatabase, private val dispa
     override suspend fun deleteAllElections() {
         withContext(dispatcher) {
             electionDao.clear()
+        }
+    }
+
+    override suspend fun deleteSavedElectionById(electionId: Int) {
+        withContext(dispatcher) {
+            savedElectionDao.deleteSavedElectionById(electionId)
         }
     }
 }
