@@ -23,8 +23,8 @@
     <string name="representative_address_not_valid">Please, input address</string>
     <string name="representative_location_not_available">Location is not available</string>
     <string name="voter_no_app_to_open_link">No app to open the link</string>
+    <string name="representatives_not_found">Representatives not found</string>
+    <string name="no_internet_connection">No internet connection</string>
 
-
-    <!-- TODO: Add necessary string values -->
 
 </resources>

@@ -1,9 +1,12 @@
 package com.example.android.politicalpreparedness.util
 
+import android.content.Context
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.Group
+import com.example.android.politicalpreparedness.R
 
 fun TextView.showIfNotNull(value: String?, setData: Boolean = true) {
     if (value != null) {
@@ -31,4 +34,8 @@ fun Group.showIfNotNull(value: String?) {
     } else {
         this.visibility = android.view.View.GONE
     }
+}
+
+fun showNoInternetConnectionToast(context: Context){
+    Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
 }

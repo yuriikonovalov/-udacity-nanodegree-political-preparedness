@@ -18,7 +18,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ElectionsFragment : Fragment() {
 
-    //TODO: Declare ViewModel
     private val viewModel: ElectionsViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -26,9 +25,7 @@ class ElectionsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
 
-        //TODO: Add ViewModel values and create ViewModel
 
-        //TODO: Add binding values
         val binding = FragmentElectionBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -62,12 +59,6 @@ class ElectionsFragment : Fragment() {
             savedElectionsAdapter.submitList(savedElections.data)
         })
 
-
-        //TODO: Link elections to voter info
-
-        //TODO: Initiate recycler adapters
-
-        //TODO: Populate recycler adapters
         return binding.root
     }
 

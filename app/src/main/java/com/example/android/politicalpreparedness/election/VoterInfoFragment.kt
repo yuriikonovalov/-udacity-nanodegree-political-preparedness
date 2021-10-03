@@ -16,7 +16,9 @@ import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBi
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import com.example.android.politicalpreparedness.network.models.formattedElectionDay
 import com.example.android.politicalpreparedness.util.ButtonState
+import com.example.android.politicalpreparedness.util.InternetConnection
 import com.example.android.politicalpreparedness.util.showIfNotNull
+import com.example.android.politicalpreparedness.util.showNoInternetConnectionToast
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -33,7 +35,7 @@ class VoterInfoFragment : Fragment() {
     private val viewModel: VoterInfoViewModel by viewModel() {
         parametersOf(argElectionId, argDivision)
     }
-    private lateinit var snackbar: Snackbar
+
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -43,6 +45,7 @@ class VoterInfoFragment : Fragment() {
         binding.viewModel = viewModel
 //TODO: check internet connection
         viewModel.voterInfo.observe(viewLifecycleOwner, Observer { result ->
+            // binding.resultVoterInfoResponse = result
             when (result) {
                 is Result.Success -> {
                     hideProgressBar()
@@ -53,8 +56,7 @@ class VoterInfoFragment : Fragment() {
                 }
                 is Result.Error -> {
                     hideProgressBar()
-                    Toast.makeText(requireContext(), "Couldn't load information", Toast.LENGTH_SHORT).show()
-                    showErrorSnackbar()
+                    showNoDataUI()
                 }
             }
         })
@@ -83,16 +85,18 @@ class VoterInfoFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.getVoterInfo()
+    private fun showNoDataUI() {
+        binding.imageNoData.visibility = View.VISIBLE
+        binding.voterInfoGroup.visibility = View.INVISIBLE
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // Dismiss snackbar if the user presses the back button instead of the "retry"
-        if (::snackbar.isInitialized && snackbar.isShown) {
-            snackbar.dismiss()
+    override fun onStart() {
+        super.onStart()
+        if (InternetConnection.isConnected(requireContext())) {
+            viewModel.getVoterInfo()
+        } else {
+            showNoInternetConnectionToast(requireContext())
+            viewModel.setResultError()
         }
     }
 
@@ -136,13 +140,7 @@ class VoterInfoFragment : Fragment() {
         binding.progressBar.visibility = View.VISIBLE
     }
 
-    private fun showErrorSnackbar() {
-        snackbar = Snackbar.make(binding.root, "Error occurred", Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction("Retry") {
-            viewModel.getVoterInfo()
-        }
-        snackbar.show()
-    }
+
 }
 
 

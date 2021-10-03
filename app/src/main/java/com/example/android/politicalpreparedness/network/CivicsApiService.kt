@@ -16,8 +16,6 @@ import java.util.*
 
 private const val BASE_URL = "https://www.googleapis.com/civicinfo/v2/"
 
-// : Add adapters for Java Date and custom adapter ElectionAdapter (included in project)
-
 object CivicsApi {
     fun provideCivicsApi(retrofit: Retrofit): CivicsApiService {
         return retrofit.create(CivicsApiService::class.java)
@@ -48,19 +46,16 @@ object CivicsApi {
  */
 
 interface CivicsApiService {
-    //: Add elections API Call
+
     @GET("elections")
     suspend fun getElections(): ElectionResponse
 
-    //: Add voterinfo API Call
     @GET("voterinfo")
     suspend fun getVoterInfo(
             @Query("address") address: String,
             @Query("electionId") electionId: Long
     ): VoterInfoResponse
 
-
-    //TODO: Add representatives API Call
     @GET("representatives")
     suspend fun getRepresentatives(
             @Query("address") address: String

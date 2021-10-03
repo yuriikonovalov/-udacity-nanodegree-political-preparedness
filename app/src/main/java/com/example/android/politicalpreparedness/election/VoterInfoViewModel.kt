@@ -7,10 +7,11 @@ import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.network.models.Division
 import com.example.android.politicalpreparedness.network.models.SavedElection
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
-import com.example.android.politicalpreparedness.network.models.requestAddress
+import com.example.android.politicalpreparedness.network.models.queryFormattedAddress
 import com.example.android.politicalpreparedness.util.ButtonState
 import com.example.android.politicalpreparedness.util.SingleEvent
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 class VoterInfoViewModel(private val currentElectionId: Int,
@@ -43,11 +44,15 @@ class VoterInfoViewModel(private val currentElectionId: Int,
     }
 
 
-     fun getVoterInfo() {
+    fun getVoterInfo() {
         _voterInfo.value = Result.Loading
         viewModelScope.launch {
-            _voterInfo.value = repository.getVoterInfo(division.requestAddress, currentElectionId.toLong())
+            _voterInfo.value = repository.getVoterInfo(division.queryFormattedAddress, currentElectionId.toLong())
         }
+    }
+
+    fun setResultError() {
+        _voterInfo.value = Result.Error(Exception())
     }
 
     // Trigger only when the URL is not Null

@@ -9,9 +9,7 @@
     <dimen name="margin_small">4dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
     <dimen name="margin_large">32dp</dimen>
+
     <dimen name="representative_item_icon_size">32dp</dimen>
-
-
-    <!-- TODO: Add necessary dimension values -->s
 
 </resources>

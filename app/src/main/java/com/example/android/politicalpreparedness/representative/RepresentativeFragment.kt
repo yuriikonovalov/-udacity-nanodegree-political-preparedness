@@ -21,9 +21,12 @@ import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.databinding.FragmentRepresentativeBinding
 import com.example.android.politicalpreparedness.network.models.Address
 import com.example.android.politicalpreparedness.representative.adapter.RepresentativeListAdapter
+import com.example.android.politicalpreparedness.util.InternetConnection
+import com.example.android.politicalpreparedness.util.showNoInternetConnectionToast
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -36,8 +39,6 @@ class RepresentativeFragment : Fragment() {
             ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             loadRepresentativesWithDeviceLocation()
-        } else {
-            //TODO: show snackBar to explain why it's needed
         }
     }
 
@@ -66,16 +67,20 @@ class RepresentativeFragment : Fragment() {
                     binding.representativeProgressBar.visibility = View.VISIBLE
                 }
                 is Result.Error -> {
-                    Toast.makeText(requireContext(), "Representatives not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.representatives_not_found), Toast.LENGTH_SHORT).show()
                     binding.representativeProgressBar.visibility = View.GONE
                 }
             }
 
         })
-//TODO: check internet connection
         binding.buttonSearch.setOnClickListener {
             hideKeyboard()
-            loadRepresentativesWithEnteredData()
+            if (InternetConnection.isConnected(requireContext())) {
+                loadRepresentativesWithEnteredData()
+            } else {
+                showNoInternetConnectionToast(requireContext())
+            }
+
         }
 
         binding.buttonUseMyLocation.setOnClickListener {
@@ -84,7 +89,6 @@ class RepresentativeFragment : Fragment() {
 
         return binding.root
     }
-
 
     private fun loadRepresentativesWithEnteredData() {
         viewModel.setAddress(
@@ -104,7 +108,13 @@ class RepresentativeFragment : Fragment() {
 
     private fun loadRepresentativesWithDeviceLocation() {
         checkLocationPermissions()
-        getLocationAndLoadRepresentatives()
+
+        if (InternetConnection.isConnected(requireContext())) {
+            getLocationAndLoadRepresentatives()
+        } else {
+            showNoInternetConnectionToast(requireContext())
+        }
+
     }
 
     private fun checkLocationPermissions() {

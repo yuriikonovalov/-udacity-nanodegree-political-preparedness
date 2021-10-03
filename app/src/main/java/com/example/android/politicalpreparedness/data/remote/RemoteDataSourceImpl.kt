@@ -1,13 +1,10 @@
 package com.example.android.politicalpreparedness.data.remote
 
-import android.util.Log
 import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.data.Result
-import com.example.android.politicalpreparedness.data.ResultConstants
 import com.example.android.politicalpreparedness.network.CivicsApiService
 import com.example.android.politicalpreparedness.network.models.RepresentativeResponse
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
-import retrofit2.HttpException
 import java.lang.Exception
 
 class RemoteDataSourceImpl(private val civicsApiService: CivicsApiService) : RemoteDataSource {

@@ -10,7 +10,7 @@ data class Division(
         val state: String
 ) : Parcelable
 
-val Division.requestAddress: String
+val Division.queryFormattedAddress: String
     get() {
         return "${this.state}, ${this.country}"
     }

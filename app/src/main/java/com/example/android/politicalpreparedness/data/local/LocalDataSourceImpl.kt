@@ -2,7 +2,6 @@ package com.example.android.politicalpreparedness.data.local
 
 import androidx.lifecycle.LiveData
 import com.example.android.politicalpreparedness.data.Result
-import com.example.android.politicalpreparedness.data.ResultConstants
 import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.network.models.Election
 import kotlinx.coroutines.CoroutineDispatcher
@@ -55,7 +54,7 @@ class LocalDataSourceImpl(
                 if (election != null) {
                     return@withContext Result.Success(election)
                 } else {
-                    return@withContext Result.Error(Exception(ResultConstants.ELECTION_NOT_FOUND))
+                    return@withContext Result.Error(Exception())
                 }
             } catch (exception: Exception) {
                 return@withContext Result.Error(exception)
