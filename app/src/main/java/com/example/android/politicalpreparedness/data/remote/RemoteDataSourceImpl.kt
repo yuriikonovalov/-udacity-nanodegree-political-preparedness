@@ -5,6 +5,7 @@ import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.data.ResultConstants
 import com.example.android.politicalpreparedness.network.CivicsApiService
+import com.example.android.politicalpreparedness.network.models.RepresentativeResponse
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import retrofit2.HttpException
 import java.lang.Exception
@@ -12,18 +13,12 @@ import java.lang.Exception
 class RemoteDataSourceImpl(private val civicsApiService: CivicsApiService) : RemoteDataSource {
 
     override suspend fun getElections(): Result<List<Election>> {
-        try {
+        return try {
             val result = civicsApiService.getElections()
-            return if (result.elections.isEmpty()) {
-                Log.d("requestElections", "result - empty")
-                Result.Error(Exception(ResultConstants.ELECTIONS_NOT_FOUND))
-            } else {
-                Log.d("requestElections", "result - success")
-                Result.Success(result.elections)
-            }
+            Result.Success(result.elections)
         } catch (e: Exception) {
             Log.d("requestElections", "Exception: ${e.localizedMessage}")
-            return Result.Error(e)
+            Result.Error(e)
         }
 
     }
@@ -33,6 +28,15 @@ class RemoteDataSourceImpl(private val civicsApiService: CivicsApiService) : Rem
             val result = civicsApiService.getVoterInfo(address, electionId)
             Result.Success(result)
         } catch (e: HttpException) {
+            Result.Error(e)
+        }
+    }
+
+    override suspend fun getRepresentatives(address: String): Result<RepresentativeResponse> {
+        return try {
+            val result = civicsApiService.getRepresentatives(address)
+            Result.Success(result)
+        } catch (e: Exception) {
             Result.Error(e)
         }
     }

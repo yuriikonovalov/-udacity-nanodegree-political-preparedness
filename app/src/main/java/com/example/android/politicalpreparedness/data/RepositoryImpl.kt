@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.android.politicalpreparedness.data.local.LocalDataSource
 import com.example.android.politicalpreparedness.data.remote.RemoteDataSource
 import com.example.android.politicalpreparedness.network.models.Election
+import com.example.android.politicalpreparedness.network.models.RepresentativeResponse
 import com.example.android.politicalpreparedness.network.models.SavedElection
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import kotlinx.coroutines.CoroutineDispatcher
@@ -51,6 +52,10 @@ class RepositoryImpl(private val localDataSource: LocalDataSource,
 
     override suspend fun getVoterInfo(address: String, electionId: Long): Result<VoterInfoResponse> {
         return remoteDataSource.getVoterInfo(address, electionId)
+    }
+
+    override suspend fun getRepresentatives(address: String): Result<RepresentativeResponse> {
+        return remoteDataSource.getRepresentatives(address)
     }
 
 

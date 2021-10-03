@@ -11,6 +11,7 @@ import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.election.ElectionsViewModel
 import com.example.android.politicalpreparedness.election.VoterInfoViewModel
 import com.example.android.politicalpreparedness.network.*
+import com.example.android.politicalpreparedness.representative.RepresentativeViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -25,7 +26,9 @@ class MyApplication : Application() {
         val viewModelModule = module {
             viewModel { ElectionsViewModel(get(), get()) }
             viewModel { params ->
-                VoterInfoViewModel(currentElectionId = params.get(), division = params.get(), get(), get()) }
+                VoterInfoViewModel(currentElectionId = params.get(), division = params.get(), get(), get())
+            }
+            viewModel { RepresentativeViewModel(get(), get()) }
         }
 
         val networkModule = module {
