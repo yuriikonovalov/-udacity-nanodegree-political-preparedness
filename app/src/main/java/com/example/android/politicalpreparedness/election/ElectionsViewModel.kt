@@ -10,7 +10,6 @@ import com.example.android.politicalpreparedness.network.models.SavedElection
 import kotlinx.coroutines.launch
 
 
-//TODO: Construct ViewModel and provide election datasource
 class ElectionsViewModel(private val repository: Repository, application: Application) : AndroidViewModel(application) {
 
     val upcomingElections = repository.observeElections()

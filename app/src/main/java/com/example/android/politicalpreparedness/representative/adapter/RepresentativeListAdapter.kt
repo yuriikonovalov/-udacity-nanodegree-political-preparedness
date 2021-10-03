@@ -34,11 +34,10 @@ class RepresentativeViewHolder private constructor(val binding: ListItemRepresen
         binding.representative = item
         binding.representativePhoto.setImageResource(R.drawable.ic_profile)
 
-        //TODO: Show social links ** Hint: Use provided helper methods
         item.official.channels?.let {
             showSocialLinks(it)
         }
-        //TODO: Show www link ** Hint: Use provided helper methods
+
         item.official.urls?.let {
             showWWWLinks(it)
         }
@@ -46,7 +45,6 @@ class RepresentativeViewHolder private constructor(val binding: ListItemRepresen
         binding.executePendingBindings()
     }
 
-    //TODO: Add companion object to inflate ViewHolder (from)
     companion object {
         fun from(parent: ViewGroup): RepresentativeViewHolder {
             val inflater = LayoutInflater.from(parent.context)
@@ -96,8 +94,6 @@ class RepresentativeViewHolder private constructor(val binding: ListItemRepresen
 
 }
 
-//TODO: Create RepresentativeDiffCallback
-
 class RepresentativeDiffCallback() : DiffUtil.ItemCallback<Representative>() {
     override fun areItemsTheSame(oldItem: Representative, newItem: Representative): Boolean {
         return oldItem == newItem
@@ -108,5 +104,3 @@ class RepresentativeDiffCallback() : DiffUtil.ItemCallback<Representative>() {
     }
 
 }
-
-//TODO: Create RepresentativeListener

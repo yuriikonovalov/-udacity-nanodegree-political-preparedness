@@ -17,7 +17,6 @@ class RemoteDataSourceImpl(private val civicsApiService: CivicsApiService) : Rem
             val result = civicsApiService.getElections()
             Result.Success(result.elections)
         } catch (e: Exception) {
-            Log.d("requestElections", "Exception: ${e.localizedMessage}")
             Result.Error(e)
         }
 
@@ -27,7 +26,7 @@ class RemoteDataSourceImpl(private val civicsApiService: CivicsApiService) : Rem
         return try {
             val result = civicsApiService.getVoterInfo(address, electionId)
             Result.Success(result)
-        } catch (e: HttpException) {
+        } catch (e: Exception) {
             Result.Error(e)
         }
     }

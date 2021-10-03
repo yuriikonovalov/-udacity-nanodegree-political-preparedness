@@ -17,6 +17,7 @@ import com.example.android.politicalpreparedness.network.models.VoterInfoRespons
 import com.example.android.politicalpreparedness.network.models.formattedElectionDay
 import com.example.android.politicalpreparedness.util.ButtonState
 import com.example.android.politicalpreparedness.util.showIfNotNull
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -32,22 +33,15 @@ class VoterInfoFragment : Fragment() {
     private val viewModel: VoterInfoViewModel by viewModel() {
         parametersOf(argElectionId, argDivision)
     }
+    private lateinit var snackbar: Snackbar
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        //TODO: Add ViewModel values and create ViewModel
-
-        //TODO: Add binding values
         binding = FragmentVoterInfoBinding.inflate(inflater)
         binding.viewModel = viewModel
-
-        //TODO: Populate voter info -- hide views without provided data.
-        /**
-        Hint: You will need to ensure proper data is provided from previous fragment.
-         */
-
+//TODO: check internet connection
         viewModel.voterInfo.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.Success -> {
@@ -59,21 +53,12 @@ class VoterInfoFragment : Fragment() {
                 }
                 is Result.Error -> {
                     hideProgressBar()
-                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Couldn't load information", Toast.LENGTH_SHORT).show()
+                    showErrorSnackbar()
                 }
             }
         })
 
-        //TODO: Handle loading of URLs
-        viewModel.openBallotUrl.observe(viewLifecycleOwner, Observer { url ->
-            openWebPage(url)
-        })
-
-        viewModel.openVotingLocationFinderUrl.observe(viewLifecycleOwner, Observer { url ->
-            openWebPage(url)
-        })
-
-        //TODO: Handle save button UI state
         viewModel.buttonState.observe(viewLifecycleOwner, Observer { state ->
             state?.let {
                 when (state) {
@@ -87,11 +72,31 @@ class VoterInfoFragment : Fragment() {
             }
         })
 
-        //TODO: cont'd Handle save button clicks
+        viewModel.openBallotUrl.observe(viewLifecycleOwner, Observer { url ->
+            openWebPage(url)
+        })
+
+        viewModel.openVotingLocationFinderUrl.observe(viewLifecycleOwner, Observer { url ->
+            openWebPage(url)
+        })
+
         return binding.root
     }
 
-    //TODO: Create method to load URL intents
+    override fun onStart() {
+        super.onStart()
+        viewModel.getVoterInfo()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Dismiss snackbar if the user presses the back button instead of the "retry"
+        if (::snackbar.isInitialized && snackbar.isShown) {
+            snackbar.dismiss()
+        }
+    }
+
+
     private fun openWebPage(url: String) {
         val webUrl = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW, webUrl)
@@ -99,7 +104,7 @@ class VoterInfoFragment : Fragment() {
         if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
         } else {
-            Toast.makeText(requireContext(), "No app to open the link", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.voter_no_app_to_open_link), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -123,7 +128,6 @@ class VoterInfoFragment : Fragment() {
         }
     }
 
-
     private fun hideProgressBar() {
         binding.progressBar.visibility = View.GONE
     }
@@ -132,7 +136,13 @@ class VoterInfoFragment : Fragment() {
         binding.progressBar.visibility = View.VISIBLE
     }
 
-
+    private fun showErrorSnackbar() {
+        snackbar = Snackbar.make(binding.root, "Error occurred", Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction("Retry") {
+            viewModel.getVoterInfo()
+        }
+        snackbar.show()
+    }
 }
 
 

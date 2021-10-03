@@ -7,10 +7,8 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,18 +24,12 @@ import com.example.android.politicalpreparedness.representative.adapter.Represen
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
-import kotlinx.android.synthetic.main.fragment_representative.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
 class RepresentativeFragment : Fragment() {
-    companion object {
-        const val TAG = "RepresentativeFragment"
-    }
 
-    //TODO: Declare ViewModel
     private val viewModel: RepresentativeViewModel by viewModel()
-
     private lateinit var binding: FragmentRepresentativeBinding
 
     private val requestForegroundLocationPermissionLauncher = registerForActivityResult(
@@ -53,63 +45,48 @@ class RepresentativeFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        //TODO: Establish bindings
         binding = FragmentRepresentativeBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-//        ArrayAdapter.createFromResource(
-//                requireContext(),
-//                R.array.states,
-//                android.R.layout.simple_spinner_item
-//        ).also { adapter ->
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            binding.state.adapter = adapter
-//        }
-
-        //TODO: Define and assign Representative adapter
         val adapter = RepresentativeListAdapter()
+
         binding.representativesList.apply {
             this.adapter = adapter
             this.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        //TODO: Populate Representative adapter
         viewModel.representatives.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.Success -> {
                     adapter.submitList(result.data)
                     binding.representativeProgressBar.visibility = View.GONE
-                    binding.representativeTitle.visibility = View.VISIBLE
                 }
                 is Result.Loading -> {
                     binding.representativeProgressBar.visibility = View.VISIBLE
                 }
                 is Result.Error -> {
-                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Representatives not found", Toast.LENGTH_SHORT).show()
                     binding.representativeProgressBar.visibility = View.GONE
                 }
             }
+
         })
-
-
+//TODO: check internet connection
         binding.buttonSearch.setOnClickListener {
             hideKeyboard()
             loadRepresentativesWithEnteredData()
         }
 
-        //TODO: Establish button listeners for field and location search
         binding.buttonUseMyLocation.setOnClickListener {
             loadRepresentativesWithDeviceLocation()
         }
+
         return binding.root
     }
 
 
     private fun loadRepresentativesWithEnteredData() {
-        //TODO: check input data
-        Log.d(TAG, binding.state.selectedItem.toString())
-
         viewModel.setAddress(
                 binding.addressLine1.text.toString(),
                 binding.addressLine2.text.toString(),
@@ -117,10 +94,11 @@ class RepresentativeFragment : Fragment() {
                 binding.state.itemOrNotSelected(),
                 binding.zip.text.toString()
         )
+
         if (viewModel.isAddressValid) {
             viewModel.loadRepresentatives()
         } else {
-            Toast.makeText(requireContext(), "Please, fill all fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.representative_address_not_valid), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -146,21 +124,31 @@ class RepresentativeFragment : Fragment() {
         )
     }
 
-
     @SuppressLint("MissingPermission")
     private fun getLocationAndLoadRepresentatives() {
         viewModel.enableLoadingState()
+        val errorToast = Toast.makeText(requireContext(),
+                getString(R.string.representative_location_not_available), Toast.LENGTH_SHORT)
 
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
         fusedLocationProviderClient.getCurrentLocation(
                 LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,
                 CancellationTokenSource().token
         )
-                .addOnSuccessListener { location ->
-                    val address = geoCodeLocation(location)
-                    viewModel.setAddress(address)
-                    viewModel.loadRepresentatives()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val address = geoCodeLocation(task.result)
+                        viewModel.setAddress(address)
+                        viewModel.loadRepresentatives()
+                    } else {
+                        errorToast.show()
+                    }
+
                 }
+                .addOnFailureListener {
+                    errorToast.show()
+                }
+
     }
 
     private fun geoCodeLocation(location: Location): Address {
