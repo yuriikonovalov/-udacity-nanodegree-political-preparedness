@@ -13,11 +13,11 @@ import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBi
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import com.example.android.politicalpreparedness.network.models.formattedElectionDay
 import com.example.android.politicalpreparedness.util.*
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class VoterInfoFragment : Fragment() {
-
 
     private lateinit var binding: FragmentVoterInfoBinding
     private val argDivision by lazy { VoterInfoFragmentArgs.fromBundle(requireArguments()).argDivision }
@@ -29,6 +29,8 @@ class VoterInfoFragment : Fragment() {
         parametersOf(argElectionId, argDivision)
     }
 
+    private lateinit var snackBar: Snackbar
+
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -36,9 +38,14 @@ class VoterInfoFragment : Fragment() {
 
         binding = FragmentVoterInfoBinding.inflate(inflater)
         binding.viewModel = viewModel
-//TODO: check internet connection
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         viewModel.voterInfo.observe(viewLifecycleOwner, Observer { result ->
-            //  binding.resultVoterInfoResponse = result
             when (result) {
                 is Result.Success -> {
                     displayResultSuccessUI(result.data)
@@ -73,14 +80,37 @@ class VoterInfoFragment : Fragment() {
             openWebPage(url)
         })
 
+        loadVoterInfo()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Hide a snackbar if the user presses the ack button instead "Retry"
+        if (::snackBar.isInitialized && snackBar.isShown) {
+            snackBar.dismiss()
+        }
+    }
+
+    private fun loadVoterInfo() {
         if (InternetConnection.isConnected(requireContext())) {
             viewModel.getVoterInfo()
         } else {
-            showNoInternetConnectionToast(requireContext())
+            showSnackBarRetry()
             viewModel.setResultError()
         }
+    }
 
-        return binding.root
+    private fun showSnackBarRetry() {
+        snackBar = Snackbar.make(
+                requireView(),
+                getString(R.string.error_no_network_connection),
+                Snackbar.LENGTH_INDEFINITE)
+
+        snackBar.setAction(getString(R.string.retry)) {
+            loadVoterInfo()
+        }
+
+        snackBar.show()
     }
 
     private fun openWebPage(url: String) {
@@ -95,8 +125,6 @@ class VoterInfoFragment : Fragment() {
     }
 
     private fun displayResultSuccessUI(response: VoterInfoResponse) {
-        binding.progressBar.visibility = View.GONE
-
         val name = response.election.name
         val formattedDate = response.election.formattedElectionDay
         val votingLocationFinderUrl = response.state?.get(0)?.electionAdministrationBody?.votingLocationFinderUrl
@@ -111,16 +139,24 @@ class VoterInfoFragment : Fragment() {
             stateLocations.showIfNotNull(votingLocationFinderUrl, false)
             addressGroup.showIfNotNull(addressString)
             address.showIfNotNull(addressString)
+            buttonVoter.visibility = View.VISIBLE
+
+            progressIndicator.visibility = View.GONE
+            imageNoData.visibility = View.GONE
         }
     }
 
     private fun displayResultLoadingUI() {
-        binding.progressBar.visibility = View.VISIBLE
+        binding.electionName.title = ""
+        binding.progressIndicator.visibility = View.VISIBLE
+        binding.imageNoData.visibility = View.GONE
     }
 
     private fun displayResultErrorUI() {
+        binding.electionName.title = getString(R.string.error_something_went_wrong)
         binding.imageNoData.visibility = View.VISIBLE
-        binding.progressBar.visibility = View.GONE
+        binding.progressIndicator.visibility = View.GONE
+        binding.buttonVoter.visibility = View.GONE
     }
 
 

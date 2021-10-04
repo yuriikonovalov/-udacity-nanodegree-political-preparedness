@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Political Preparedness</string>
+
     <string name="launch_elections">Upcoming elections</string>
     <string name="launch_find_my_representatives">Find my representatives</string>
     <string name="launch_logo_contentDescription">Political Preparedness app logo</string>
+
     <string name="election_upcoming_elections">Upcoming Elections</string>
     <string name="election_saved_elections">Saved Elections</string>
+
     <string name="representative_search_title">Representative Search</string>
     <string name="representative_my_representatives_title">My Representatives</string>
     <string name="representative_address_line_1">Address Line 1</string>
@@ -14,17 +17,24 @@
     <string name="representative_zip">Zip</string>
     <string name="representative_find_my_representatives">Find my representatives</string>
     <string name="representative_use_my_location">Use my location</string>
+
     <string name="voter_follow_election">Follow election</string>
     <string name="voter_unfollow_election">Unfollow election</string>
     <string name="voter_election_information">Election Information</string>
     <string name="voter_voting_locations">Voting Locations</string>
     <string name="voter_ballot_information">Ballot Information</string>
     <string name="voter_address">Mailing Address</string>
+    <string name="voter_no_app_to_open_link">No app to open the link</string>
+
     <string name="representative_address_not_valid">Please, input address</string>
     <string name="representative_location_not_available">Location is not available</string>
-    <string name="voter_no_app_to_open_link">No app to open the link</string>
     <string name="representatives_not_found">Representatives not found</string>
-    <string name="no_internet_connection">No internet connection</string>
+
+    <string name="error_no_internet_connection">No internet connection</string>
+    <string name="error_something_went_wrong">Something went wrong…</string>
+    <string name="retry">Retry</string>
+    <string name="error_no_network_connection">No network connection!</string>
+    <string name="error_couldnt_refresh_data">Couldn\'t refresh data</string>
 
 
 </resources>

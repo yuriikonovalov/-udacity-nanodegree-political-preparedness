@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.Group
 import com.example.android.politicalpreparedness.R
 
@@ -19,15 +18,6 @@ fun TextView.showIfNotNull(value: String?, setData: Boolean = true) {
     }
 }
 
-//fun Toolbar.showIfNotNull(value: String?) {
-//    if (value != null) {
-//        this.visibility = View.VISIBLE
-//        this.title = value
-//    } else {
-//        this.visibility = View.GONE
-//    }
-//}
-
 fun Group.showIfNotNull(value: String?) {
     if (value == null) {
         this.visibility = View.GONE
@@ -37,5 +27,5 @@ fun Group.showIfNotNull(value: String?) {
 }
 
 fun showNoInternetConnectionToast(context: Context) {
-    Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.error_no_internet_connection), Toast.LENGTH_SHORT).show()
 }

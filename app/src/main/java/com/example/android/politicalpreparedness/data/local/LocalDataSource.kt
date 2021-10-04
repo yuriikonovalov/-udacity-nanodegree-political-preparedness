@@ -10,7 +10,10 @@ import com.example.android.politicalpreparedness.network.models.SavedElection
 interface LocalDataSource {
     fun observeAllElections(): LiveData<Result<List<Election>>>
 
+
     suspend fun saveElection(election: Election)
+
+    suspend fun saveElections(elections: List<Election>): List<Long>
 
     fun observeSavedElectionIds(): LiveData<List<Int>>
 

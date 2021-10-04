@@ -5,10 +5,11 @@ import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.network.models.RepresentativeResponse
 import com.example.android.politicalpreparedness.network.models.SavedElection
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
+import com.example.android.politicalpreparedness.util.RefreshCacheResult
 
 interface Repository {
 
-    suspend fun refreshElectionsCache()
+    suspend fun refreshElectionsCache(): RefreshCacheResult
 
     fun observeElections(): LiveData<Result<List<Election>>>
 

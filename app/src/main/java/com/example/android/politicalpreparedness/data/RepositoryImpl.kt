@@ -7,6 +7,7 @@ import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.network.models.RepresentativeResponse
 import com.example.android.politicalpreparedness.network.models.SavedElection
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
+import com.example.android.politicalpreparedness.util.RefreshCacheResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,13 +16,18 @@ class RepositoryImpl(private val localDataSource: LocalDataSource,
                      private val remoteDataSource: RemoteDataSource,
                      private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : Repository {
 
-    override suspend fun refreshElectionsCache() {
-        withContext(dispatcher) {
+    override suspend fun refreshElectionsCache(): RefreshCacheResult {
+        return withContext(dispatcher) {
             val elections = remoteDataSource.getElections()
             if (elections is Result.Success) {
-                elections.data.forEach {
-                    localDataSource.saveElection(it)
+                val rowIdList = localDataSource.saveElections(elections.data)
+                if (rowIdList.isNotEmpty()) {
+                    return@withContext RefreshCacheResult.SUCCESS
+                } else {
+                    return@withContext RefreshCacheResult.FAILURE
                 }
+            } else {
+                return@withContext RefreshCacheResult.FAILURE
             }
         }
     }

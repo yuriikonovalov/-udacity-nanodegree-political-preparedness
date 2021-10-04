@@ -29,6 +29,10 @@ class LocalDataSourceImpl(
         electionDao.insertElection(election)
     }
 
+    override suspend fun saveElections(elections: List<Election>): List<Long> {
+        return electionDao.insertElections(elections)
+    }
+
     override fun observeSavedElectionIds(): LiveData<List<Int>> {
         return savedElectionDao.observeSavedElectionIds()
     }

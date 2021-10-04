@@ -13,7 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/padding_default"
+        android:paddingHorizontal="@dimen/padding_default"
+        android:paddingTop="@dimen/padding_default"
         tools:context="com.example.android.politicalpreparedness.MainActivity">
 
         <TextView
@@ -26,15 +27,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/upcoming_elections_list"
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/upcoming_elections_list_swipe_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginVertical="@dimen/margin_normal"
             app:layout_constraintBottom_toTopOf="@id/guideline_center_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upcoming_elections_title" />
+            app:layout_constraintTop_toBottomOf="@id/upcoming_elections_title">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/upcoming_elections_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
         <TextView
             android:id="@+id/saved_elections_title"
@@ -50,7 +60,7 @@
             android:id="@+id/saved_elections_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginVertical="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,6 +72,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.5" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
