@@ -19,23 +19,23 @@ fun TextView.showIfNotNull(value: String?, setData: Boolean = true) {
     }
 }
 
-fun Toolbar.showIfNotNull(value: String?) {
-    if (value != null) {
-        this.visibility = View.VISIBLE
-        this.title = value
-    } else {
-        this.visibility = View.GONE
-    }
-}
+//fun Toolbar.showIfNotNull(value: String?) {
+//    if (value != null) {
+//        this.visibility = View.VISIBLE
+//        this.title = value
+//    } else {
+//        this.visibility = View.GONE
+//    }
+//}
 
 fun Group.showIfNotNull(value: String?) {
-    if (value != null) {
-        this.visibility = android.view.View.VISIBLE
+    if (value == null) {
+        this.visibility = View.GONE
     } else {
-        this.visibility = android.view.View.GONE
+        this.visibility = View.VISIBLE
     }
 }
 
-fun showNoInternetConnectionToast(context: Context){
+fun showNoInternetConnectionToast(context: Context) {
     Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
 }

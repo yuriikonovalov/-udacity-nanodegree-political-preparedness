@@ -6,13 +6,15 @@
 
     <data>
 
+        <import type="com.example.android.politicalpreparedness.data.Result" />
+
         <variable
             name="viewModel"
             type="com.example.android.politicalpreparedness.election.VoterInfoViewModel" />
 
         <variable
             name="resultVoterInfoResponse"
-            type="com.example.android.politicalpreparedness.data.Result" />
+            type="Result&lt;com.example.android.politicalpreparedness.network.models.VoterInfoResponse>" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,14 +29,12 @@
             android:visibility="invisible"
             app:constraint_referenced_ids="
             address_group,
-            button_voter,
             election_date,
-            election_name,
             state_ballot,
             state_header,
             state_correspondence_header,
             state_locations"
-            tools:visibility="visible" />
+            />
 
 
         <androidx.appcompat.widget.Toolbar

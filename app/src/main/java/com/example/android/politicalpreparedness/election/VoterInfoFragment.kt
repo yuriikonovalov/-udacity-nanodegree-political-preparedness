@@ -4,10 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.android.politicalpreparedness.R
@@ -15,11 +12,7 @@ import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import com.example.android.politicalpreparedness.network.models.formattedElectionDay
-import com.example.android.politicalpreparedness.util.ButtonState
-import com.example.android.politicalpreparedness.util.InternetConnection
-import com.example.android.politicalpreparedness.util.showIfNotNull
-import com.example.android.politicalpreparedness.util.showNoInternetConnectionToast
-import com.google.android.material.snackbar.Snackbar
+import com.example.android.politicalpreparedness.util.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -45,18 +38,16 @@ class VoterInfoFragment : Fragment() {
         binding.viewModel = viewModel
 //TODO: check internet connection
         viewModel.voterInfo.observe(viewLifecycleOwner, Observer { result ->
-            // binding.resultVoterInfoResponse = result
+            //  binding.resultVoterInfoResponse = result
             when (result) {
                 is Result.Success -> {
-                    hideProgressBar()
-                    populateVoterInfo(result.data)
+                    displayResultSuccessUI(result.data)
                 }
                 is Result.Loading -> {
-                    showProgressBar()
+                    displayResultLoadingUI()
                 }
                 is Result.Error -> {
-                    hideProgressBar()
-                    showNoDataUI()
+                    displayResultErrorUI()
                 }
             }
         })
@@ -82,24 +73,15 @@ class VoterInfoFragment : Fragment() {
             openWebPage(url)
         })
 
-        return binding.root
-    }
-
-    private fun showNoDataUI() {
-        binding.imageNoData.visibility = View.VISIBLE
-        binding.voterInfoGroup.visibility = View.INVISIBLE
-    }
-
-    override fun onStart() {
-        super.onStart()
         if (InternetConnection.isConnected(requireContext())) {
             viewModel.getVoterInfo()
         } else {
             showNoInternetConnectionToast(requireContext())
             viewModel.setResultError()
         }
-    }
 
+        return binding.root
+    }
 
     private fun openWebPage(url: String) {
         val webUrl = Uri.parse(url)
@@ -112,7 +94,9 @@ class VoterInfoFragment : Fragment() {
         }
     }
 
-    private fun populateVoterInfo(response: VoterInfoResponse) {
+    private fun displayResultSuccessUI(response: VoterInfoResponse) {
+        binding.progressBar.visibility = View.GONE
+
         val name = response.election.name
         val formattedDate = response.election.formattedElectionDay
         val votingLocationFinderUrl = response.state?.get(0)?.electionAdministrationBody?.votingLocationFinderUrl
@@ -120,24 +104,23 @@ class VoterInfoFragment : Fragment() {
         val addressString = response.state?.get(0)?.electionAdministrationBody?.correspondenceAddress?.toFormattedString()
 
         with(binding) {
-            electionName.showIfNotNull(name)
+            electionName.title = name
             electionDate.showIfNotNull(formattedDate)
             stateHeader.showIfNotNull(formattedDate, false)
             stateBallot.showIfNotNull(ballotInfoUrl, false)
             stateLocations.showIfNotNull(votingLocationFinderUrl, false)
             addressGroup.showIfNotNull(addressString)
             address.showIfNotNull(addressString)
-
-            buttonVoter.visibility = View.VISIBLE
         }
     }
 
-    private fun hideProgressBar() {
-        binding.progressBar.visibility = View.GONE
+    private fun displayResultLoadingUI() {
+        binding.progressBar.visibility = View.VISIBLE
     }
 
-    private fun showProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE
+    private fun displayResultErrorUI() {
+        binding.imageNoData.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
     }
 
 

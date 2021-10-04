@@ -2,7 +2,6 @@ package com.example.android.politicalpreparedness.election
 
 import android.view.View
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.BindingAdapter
@@ -70,7 +69,12 @@ fun TextView.setStateVotingLocation(result: Result<VoterInfoResponse>) {
     when (result) {
         is Result.Success -> {
             val votingLocationFinderUrl = result.data.state?.get(0)?.electionAdministrationBody?.votingLocationFinderUrl
-            setVisibility(votingLocationFinderUrl)
+            if (votingLocationFinderUrl.isNullOrBlank()) {
+                visibility = View.INVISIBLE
+            } else {
+                visibility = View.VISIBLE
+            }
+
         }
         is Result.Error -> {
             visibility = View.INVISIBLE
@@ -86,7 +90,12 @@ fun TextView.setStateBallotInfo(result: Result<VoterInfoResponse>) {
     when (result) {
         is Result.Success -> {
             val ballotInfoUrl = result.data.state?.get(0)?.electionAdministrationBody?.ballotInfoUrl
-            setVisibility(ballotInfoUrl)
+            if (ballotInfoUrl.isNullOrBlank()) {
+                visibility = View.INVISIBLE
+            } else {
+                visibility = View.VISIBLE
+            }
+
         }
         is Result.Error -> {
             visibility = View.INVISIBLE
@@ -102,7 +111,11 @@ fun TextView.setStateCorrespondenceHeader(result: Result<VoterInfoResponse>) {
     when (result) {
         is Result.Success -> {
             val correspondenceAddress = result.data.state?.get(0)?.electionAdministrationBody?.correspondenceAddress?.toFormattedString()
-            setVisibility(correspondenceAddress)
+            if (correspondenceAddress.isNullOrBlank()) {
+                visibility = View.INVISIBLE
+            } else {
+                visibility = View.VISIBLE
+            }
         }
         is Result.Error -> {
             visibility = View.INVISIBLE
@@ -144,37 +157,6 @@ fun Button.setButtonVoter(result: Result<VoterInfoResponse>) {
         }
     }
 }
-
-@BindingAdapter("progressBarVisibility")
-fun ProgressBar.setProgressBarVisibility(result: Result<VoterInfoResponse>) {
-    when (result) {
-        is Result.Success -> {
-            visibility = View.GONE
-        }
-        is Result.Error -> {
-            visibility = View.GONE
-        }
-        is Result.Loading -> {
-            visibility = View.VISIBLE
-        }
-    }
-}
-
-@BindingAdapter("imageNoData")
-fun Button.setImageNoData(result: Result<VoterInfoResponse>) {
-    when (result) {
-        is Result.Success -> {
-            visibility = View.GONE
-        }
-        is Result.Error -> {
-            visibility = View.VISIBLE
-        }
-        is Result.Loading -> {
-            visibility = View.GONE
-        }
-    }
-}
-
 
 private fun TextView.setVisibilityAndText(value: String?) {
     if (value.isNullOrBlank()) {
