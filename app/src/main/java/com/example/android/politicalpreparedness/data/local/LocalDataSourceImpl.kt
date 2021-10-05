@@ -25,12 +25,16 @@ class LocalDataSourceImpl(
         }
     }
 
-    override suspend fun saveElection(election: Election) = withContext(dispatcher) {
-        electionDao.insertElection(election)
+    override suspend fun saveElection(election: Election) {
+        withContext(dispatcher) {
+            electionDao.insertElection(election)
+        }
     }
 
     override suspend fun saveElections(elections: List<Election>): List<Long> {
-        return electionDao.insertElections(elections)
+        return withContext(dispatcher) {
+            return@withContext electionDao.insertElections(elections)
+        }
     }
 
     override fun observeSavedElectionIds(): LiveData<List<Int>> {
@@ -47,8 +51,10 @@ class LocalDataSourceImpl(
         return savedElectionDao.observeId(electionId)
     }
 
-    override suspend fun insertSavedElection(savedElection: SavedElection) = withContext(dispatcher) {
-        savedElectionDao.insertSavedElection(savedElection)
+    override suspend fun insertSavedElection(savedElection: SavedElection) {
+        withContext(dispatcher) {
+            savedElectionDao.insertSavedElection(savedElection)
+        }
     }
 
     override suspend fun getElectionById(electionId: Int): Result<Election> {

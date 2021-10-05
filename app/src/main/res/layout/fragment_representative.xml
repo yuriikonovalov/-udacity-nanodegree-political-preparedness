@@ -115,7 +115,7 @@
             style="@style/appHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_default"
             android:text="@string/representative_my_representatives_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_form" />
@@ -123,7 +123,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/representatives_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/representative_title" />
 
         <ProgressBar
@@ -135,8 +136,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_use_my_location" />
-
+            app:layout_constraintTop_toTopOf="@+id/representatives_list" />
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

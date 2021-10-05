@@ -26,7 +26,6 @@ import com.example.android.politicalpreparedness.util.showNoInternetConnectionTo
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -75,12 +74,7 @@ class RepresentativeFragment : Fragment() {
         })
         binding.buttonSearch.setOnClickListener {
             hideKeyboard()
-            if (InternetConnection.isConnected(requireContext())) {
-                loadRepresentativesWithEnteredData()
-            } else {
-                showNoInternetConnectionToast(requireContext())
-            }
-
+            loadRepresentativesWithEnteredData()
         }
 
         binding.buttonUseMyLocation.setOnClickListener {
@@ -99,15 +93,23 @@ class RepresentativeFragment : Fragment() {
                 binding.zip.text.toString()
         )
 
-        if (viewModel.isAddressValid) {
+        if (!viewModel.isAddressValid) {
+            Toast.makeText(requireContext(), getString(R.string.representative_address_not_valid), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (InternetConnection.isConnected(requireContext())) {
             viewModel.loadRepresentatives()
         } else {
-            Toast.makeText(requireContext(), getString(R.string.representative_address_not_valid), Toast.LENGTH_SHORT).show()
+            showNoInternetConnectionToast(requireContext())
         }
     }
 
     private fun loadRepresentativesWithDeviceLocation() {
-        checkLocationPermissions()
+        if (!isPermissionGranted()) {
+            requestLocationPermission()
+            return
+        }
 
         if (InternetConnection.isConnected(requireContext())) {
             getLocationAndLoadRepresentatives()
@@ -117,11 +119,6 @@ class RepresentativeFragment : Fragment() {
 
     }
 
-    private fun checkLocationPermissions() {
-        if (!isPermissionGranted()) {
-            requestLocationPermission()
-        }
-    }
 
     private fun requestLocationPermission() {
         requestForegroundLocationPermissionLauncher
@@ -136,27 +133,28 @@ class RepresentativeFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun getLocationAndLoadRepresentatives() {
-        viewModel.enableLoadingState()
+        // Show a loading indicator while getting location
+        viewModel.setLoadingState()
+
         val errorToast = Toast.makeText(requireContext(),
                 getString(R.string.representative_location_not_available), Toast.LENGTH_SHORT)
 
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        fusedLocationProviderClient.getCurrentLocation(
-                LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,
-                CancellationTokenSource().token
-        )
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val address = geoCodeLocation(task.result)
+        fusedLocationProviderClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        val address = geoCodeLocation(location)
                         viewModel.setAddress(address)
                         viewModel.loadRepresentatives()
                     } else {
+                        viewModel.setErrorState()
                         errorToast.show()
                     }
 
                 }
                 .addOnFailureListener {
                     errorToast.show()
+                    viewModel.setErrorState()
                 }
 
     }

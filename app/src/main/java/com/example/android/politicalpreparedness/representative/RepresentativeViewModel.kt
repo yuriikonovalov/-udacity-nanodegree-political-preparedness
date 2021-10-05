@@ -7,6 +7,7 @@ import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.network.models.Address
 import com.example.android.politicalpreparedness.representative.model.Representative
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class RepresentativeViewModel(private val repository: Repository, application: Application) : AndroidViewModel(application) {
 
@@ -18,6 +19,7 @@ class RepresentativeViewModel(private val repository: Repository, application: A
     val representatives: LiveData<Result<List<Representative>>>
         get() = _representatives
 
+    // Representative request requires at least 3 parameters: zip, city, address line1.
     val isAddressValid: Boolean
         get() {
             _address.value?.let {
@@ -49,8 +51,12 @@ class RepresentativeViewModel(private val repository: Repository, application: A
         }
     }
 
-    fun enableLoadingState() {
+    fun setLoadingState() {
         _representatives.value = Result.Loading
+    }
+
+    fun setErrorState() {
+        _representatives.value = Result.Error(Exception())
     }
 
     fun setAddress(address: Address) {
