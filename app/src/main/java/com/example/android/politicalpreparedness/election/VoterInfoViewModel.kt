@@ -23,11 +23,11 @@ class VoterInfoViewModel(private val currentElectionId: Int,
     val voterInfo: LiveData<Result<VoterInfoResponse>>
         get() = _voterInfo
 
-    private var _openBallotUrl = SingleEvent<String>()
+    private val _openBallotUrl = SingleEvent<String>()
     val openBallotUrl: LiveData<String>
         get() = _openBallotUrl
 
-    private var _openVotingLocationFinderUrl = SingleEvent<String>()
+    private val _openVotingLocationFinderUrl = SingleEvent<String>()
     val openVotingLocationFinderUrl: LiveData<String>
         get() = _openVotingLocationFinderUrl
 
@@ -76,6 +76,7 @@ class VoterInfoViewModel(private val currentElectionId: Int,
             deleteSavedElection(currentElectionId)
         }
     }
+
 
     private fun insertSavedElection(electionId: Int) {
         viewModelScope.launch {

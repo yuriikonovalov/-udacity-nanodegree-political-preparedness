@@ -11,7 +11,7 @@ import java.lang.Exception
 
 class RepresentativeViewModel(private val repository: Repository, application: Application) : AndroidViewModel(application) {
 
-    private val _address = MutableLiveData<Address>()
+    val _address = MutableLiveData<Address>()
     val address: LiveData<Address>
         get() = _address
 

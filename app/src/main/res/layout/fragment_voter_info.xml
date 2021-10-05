@@ -6,9 +6,17 @@
 
     <data>
 
+        <import type="com.example.android.politicalpreparedness.data.Result" />
+
+        <import type="com.example.android.politicalpreparedness.network.models.VoterInfoResponse" />
+
         <variable
             name="viewModel"
             type="com.example.android.politicalpreparedness.election.VoterInfoViewModel" />
+
+        <variable
+            name="resultVoterInfoResponse"
+            type="Result&lt;VoterInfoResponse>" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,6 +46,7 @@
             android:background="@color/colorPrimaryDark"
             android:padding="@dimen/padding_default"
             android:singleLine="true"
+            app:electionName="@{resultVoterInfoResponse}"
             app:layout_constraintTop_toTopOf="parent"
             app:titleTextColor="@color/white"
             tools:title="Oklahoma Election" />
@@ -48,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/padding_default"
+            app:electionDate="@{resultVoterInfoResponse}"
             app:layout_constraintTop_toBottomOf="@id/election_name"
             tools:text="Tue Oct 12 00:00:00 CEST 2022" />
 
@@ -61,7 +71,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/election_date"
-            app:layout_constraintTop_toBottomOf="@id/election_date" />
+            app:layout_constraintTop_toBottomOf="@id/election_date"
+            app:stateHeader="@{resultVoterInfoResponse}" />
 
         <TextView
             android:id="@+id/state_locations"
@@ -70,7 +81,8 @@
             android:onClick="@{()->viewModel.openVotingLocationFinderUrl()}"
             android:text="@string/voter_voting_locations"
             app:layout_constraintStart_toStartOf="@id/election_date"
-            app:layout_constraintTop_toBottomOf="@id/state_header" />
+            app:layout_constraintTop_toBottomOf="@id/state_header"
+            app:stateVotingLocation="@{resultVoterInfoResponse}" />
 
 
         <TextView
@@ -80,7 +92,8 @@
             android:onClick="@{()-> viewModel.openBallotUrl()}"
             android:text="@string/voter_ballot_information"
             app:layout_constraintStart_toStartOf="@id/election_date"
-            app:layout_constraintTop_toBottomOf="@id/state_locations" />
+            app:layout_constraintTop_toBottomOf="@id/state_locations"
+            app:stateBallotInfo="@{resultVoterInfoResponse}" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/address_group"
@@ -96,12 +109,14 @@
             android:text="@string/voter_address"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/election_date"
-            app:layout_constraintTop_toBottomOf="@id/state_ballot" />
+            app:layout_constraintTop_toBottomOf="@id/state_ballot"
+            app:stateCorrespondenceHeader="@{resultVoterInfoResponse}" />
 
         <TextView
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:address="@{resultVoterInfoResponse}"
             app:layout_constraintStart_toStartOf="@id/election_date"
             app:layout_constraintTop_toBottomOf="@id/state_correspondence_header"
             tools:text="Example 14D" />
@@ -114,6 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_default"
             android:onClick="@{()->viewModel.onButtonClick()}"
+            app:buttonVoter="@{resultVoterInfoResponse}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,6 +137,7 @@
 
 
         <ProgressBar
+            app:progressIndicator="@{resultVoterInfoResponse}"
             android:id="@+id/progress_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -137,6 +154,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_connection_error"
             android:visibility="gone"
+            app:imageNoData="@{resultVoterInfoResponse}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

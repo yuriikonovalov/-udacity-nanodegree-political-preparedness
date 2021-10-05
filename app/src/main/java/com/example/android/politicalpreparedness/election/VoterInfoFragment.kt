@@ -46,17 +46,7 @@ class VoterInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.voterInfo.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Result.Success -> {
-                    displayResultSuccessUI(result.data)
-                }
-                is Result.Loading -> {
-                    displayResultLoadingUI()
-                }
-                is Result.Error -> {
-                    displayResultErrorUI()
-                }
-            }
+            binding.resultVoterInfoResponse = result
         })
 
         viewModel.buttonState.observe(viewLifecycleOwner, Observer { state ->
@@ -86,10 +76,9 @@ class VoterInfoFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         // Hide a snackbar if the user presses the ack button instead "Retry"
-        if (::snackBar.isInitialized && snackBar.isShown) {
-            snackBar.dismiss()
-        }
+        hideSnackbarRetry()
     }
+
 
     private fun loadVoterInfo() {
         if (InternetConnection.isConnected(requireContext())) {
@@ -113,6 +102,12 @@ class VoterInfoFragment : Fragment() {
         snackBar.show()
     }
 
+    private fun hideSnackbarRetry() {
+        if (::snackBar.isInitialized && snackBar.isShown) {
+            snackBar.dismiss()
+        }
+    }
+
     private fun openWebPage(url: String) {
         val webUrl = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW, webUrl)
@@ -122,41 +117,6 @@ class VoterInfoFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), getString(R.string.voter_no_app_to_open_link), Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun displayResultSuccessUI(response: VoterInfoResponse) {
-        val name = response.election.name
-        val formattedDate = response.election.formattedElectionDay
-        val votingLocationFinderUrl = response.state?.get(0)?.electionAdministrationBody?.votingLocationFinderUrl
-        val ballotInfoUrl = response.state?.get(0)?.electionAdministrationBody?.ballotInfoUrl
-        val addressString = response.state?.get(0)?.electionAdministrationBody?.correspondenceAddress?.toFormattedString()
-
-        with(binding) {
-            electionName.title = name
-            electionDate.showIfNotNull(formattedDate)
-            stateHeader.showIfNotNull(formattedDate, false)
-            stateBallot.showIfNotNull(ballotInfoUrl, false)
-            stateLocations.showIfNotNull(votingLocationFinderUrl, false)
-            addressGroup.showIfNotNull(addressString)
-            address.showIfNotNull(addressString)
-            buttonVoter.visibility = View.VISIBLE
-
-            progressIndicator.visibility = View.GONE
-            imageNoData.visibility = View.GONE
-        }
-    }
-
-    private fun displayResultLoadingUI() {
-        binding.electionName.title = ""
-        binding.progressIndicator.visibility = View.VISIBLE
-        binding.imageNoData.visibility = View.GONE
-    }
-
-    private fun displayResultErrorUI() {
-        binding.electionName.title = getString(R.string.error_something_went_wrong)
-        binding.imageNoData.visibility = View.VISIBLE
-        binding.progressIndicator.visibility = View.GONE
-        binding.buttonVoter.visibility = View.GONE
     }
 
 
