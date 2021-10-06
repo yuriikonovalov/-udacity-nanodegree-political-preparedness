@@ -1,13 +1,11 @@
 package com.example.android.politicalpreparedness.election
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.politicalpreparedness.R
@@ -27,7 +25,7 @@ class ElectionsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
 
         val binding = FragmentElectionBinding.inflate(inflater)
@@ -51,17 +49,17 @@ class ElectionsFragment : Fragment() {
             this.layoutManager = LinearLayoutManager(context)
         }
 
-        viewModel.upcomingElections.observe(viewLifecycleOwner, Observer { elections ->
+        viewModel.upcomingElections.observe(viewLifecycleOwner, { elections ->
             elections as Result.Success
             upcomingElectionsAdapter.submitList(elections.data)
         })
 
-        viewModel.savedElections.observe(viewLifecycleOwner, Observer { savedElections ->
+        viewModel.savedElections.observe(viewLifecycleOwner, { savedElections ->
             savedElections as Result.Success
             savedElectionsAdapter.submitList(savedElections.data)
         })
 
-        viewModel.navigateToVoterInfo.observe(viewLifecycleOwner, Observer { election ->
+        viewModel.navigateToVoterInfo.observe(viewLifecycleOwner, { election ->
             election?.let {
                 navigateNoVoterInfoFragment(it)
             }
@@ -73,7 +71,7 @@ class ElectionsFragment : Fragment() {
         }
 
         // Hide the loading indicator for the SwipeRefreshLayout
-        viewModel.refreshCacheResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.refreshCacheResult.observe(viewLifecycleOwner, { result ->
             result?.let {
                 binding.upcomingElectionsListSwipeLayout.isRefreshing = false
             }

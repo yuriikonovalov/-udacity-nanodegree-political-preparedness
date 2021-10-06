@@ -45,7 +45,6 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
         <TextView
             android:id="@+id/saved_elections_title"
             style="@style/appHeadline5"

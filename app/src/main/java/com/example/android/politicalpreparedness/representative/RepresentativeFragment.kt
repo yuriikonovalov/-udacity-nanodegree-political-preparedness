@@ -9,7 +9,9 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Spinner
 import android.widget.Toast
@@ -17,9 +19,6 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.data.Result
@@ -34,7 +33,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Locale
+import java.util.*
 
 class RepresentativeFragment : Fragment() {
 
@@ -61,7 +60,7 @@ class RepresentativeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         binding = FragmentRepresentativeBinding.inflate(inflater)
         binding.lifecycleOwner = this
@@ -74,7 +73,7 @@ class RepresentativeFragment : Fragment() {
             this.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        viewModel.representatives.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.representatives.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Result.Success -> {
                     adapter.submitList(result.data)
@@ -90,6 +89,7 @@ class RepresentativeFragment : Fragment() {
             }
 
         })
+
         binding.buttonSearch.setOnClickListener {
             hideKeyboard()
             loadRepresentativesWithEnteredData()
@@ -141,7 +141,6 @@ class RepresentativeFragment : Fragment() {
         }
 
     }
-
 
     private fun requestLocationPermission() {
         requestForegroundLocationPermissionLauncher
@@ -211,7 +210,11 @@ class RepresentativeFragment : Fragment() {
         val geocoder = Geocoder(context, Locale.getDefault())
         return geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 .map { address ->
-                    Address(address.thoroughfare, address.subThoroughfare, address.locality, address.adminArea, address.postalCode)
+                    Address(address.thoroughfare ?: "",
+                            address.subThoroughfare ?: "",
+                            address.locality ?: "",
+                            address.adminArea ?: "",
+                            address.postalCode ?: "")
                 }
                 .first()
     }

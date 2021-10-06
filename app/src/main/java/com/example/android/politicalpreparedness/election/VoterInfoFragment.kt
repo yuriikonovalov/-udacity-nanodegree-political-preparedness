@@ -3,16 +3,15 @@ package com.example.android.politicalpreparedness.election
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.example.android.politicalpreparedness.R
-import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
-import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
-import com.example.android.politicalpreparedness.network.models.formattedElectionDay
-import com.example.android.politicalpreparedness.util.*
+import com.example.android.politicalpreparedness.util.ButtonState
+import com.example.android.politicalpreparedness.util.InternetConnection
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -34,7 +33,7 @@ class VoterInfoFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         binding = FragmentVoterInfoBinding.inflate(inflater)
         binding.viewModel = viewModel
@@ -45,11 +44,11 @@ class VoterInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.voterInfo.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.voterInfo.observe(viewLifecycleOwner, { result ->
             binding.resultVoterInfoResponse = result
         })
 
-        viewModel.buttonState.observe(viewLifecycleOwner, Observer { state ->
+        viewModel.buttonState.observe(viewLifecycleOwner, { state ->
             state?.let {
                 when (state) {
                     ButtonState.FOLLOW -> {
@@ -62,11 +61,11 @@ class VoterInfoFragment : Fragment() {
             }
         })
 
-        viewModel.openBallotUrl.observe(viewLifecycleOwner, Observer { url ->
+        viewModel.openBallotUrl.observe(viewLifecycleOwner, { url ->
             openWebPage(url)
         })
 
-        viewModel.openVotingLocationFinderUrl.observe(viewLifecycleOwner, Observer { url ->
+        viewModel.openVotingLocationFinderUrl.observe(viewLifecycleOwner, { url ->
             openWebPage(url)
         })
 

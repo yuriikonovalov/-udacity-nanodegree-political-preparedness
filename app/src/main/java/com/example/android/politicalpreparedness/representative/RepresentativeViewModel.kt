@@ -19,13 +19,14 @@ class RepresentativeViewModel(private val repository: Repository, application: A
     val representatives: LiveData<Result<List<Representative>>>
         get() = _representatives
 
-    // Representative request requires at least 3 parameters: zip, city, address line1.
     val isAddressValid: Boolean
         get() {
             _address.value?.let {
-                return !(_address.value!!.line1.isNullOrBlank()
-                        || _address.value!!.city.isNullOrBlank()
-                        || _address.value!!.zip.isNullOrBlank())
+                return _address.value!!.line1.isNotBlank()
+                        && !_address.value!!.line2.isNullOrBlank()
+                        && _address.value!!.city.isNotBlank()
+                        && _address.value!!.zip.isNotBlank()
+                        && !_address.value!!.state.isNullOrBlank()
             }
             return false
         }

@@ -1,8 +1,6 @@
 package com.example.android.politicalpreparedness.data.local
 
 import androidx.lifecycle.LiveData
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.network.models.SavedElection

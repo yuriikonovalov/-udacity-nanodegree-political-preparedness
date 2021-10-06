@@ -30,7 +30,6 @@
             android:layout_height="wrap_content"
             android:visibility="invisible"
             app:constraint_referenced_ids="
-            address_group,
             election_date,
             state_ballot,
             state_header,
@@ -95,12 +94,6 @@
             app:layout_constraintTop_toBottomOf="@id/state_locations"
             app:stateBallotInfo="@{resultVoterInfoResponse}" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/address_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="state_correspondence_header,address" />
-
         <TextView
             android:id="@+id/state_correspondence_header"
             android:layout_width="wrap_content"
@@ -158,7 +151,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/image_no_data" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

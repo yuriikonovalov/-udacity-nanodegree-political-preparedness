@@ -94,7 +94,7 @@ class RepresentativeViewHolder private constructor(val binding: ListItemRepresen
 
 }
 
-class RepresentativeDiffCallback() : DiffUtil.ItemCallback<Representative>() {
+class RepresentativeDiffCallback : DiffUtil.ItemCallback<Representative>() {
     override fun areItemsTheSame(oldItem: Representative, newItem: Representative): Boolean {
         return oldItem == newItem
     }

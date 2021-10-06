@@ -1,12 +1,13 @@
 package com.example.android.politicalpreparedness.election
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.data.Repository
 import com.example.android.politicalpreparedness.data.Result
 import com.example.android.politicalpreparedness.network.models.Election
-import com.example.android.politicalpreparedness.network.models.SavedElection
 import com.example.android.politicalpreparedness.util.RefreshCacheResult
 import com.example.android.politicalpreparedness.util.SingleEvent
 import kotlinx.coroutines.launch

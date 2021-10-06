@@ -1,7 +1,6 @@
 package com.example.android.politicalpreparedness.util
 
 import android.util.Log
-import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -31,7 +30,7 @@ class SingleEvent<T> : MutableLiveData<T>() {
             Log.w(TAG, "Multiple observers registered but only one will be notified of changes.")
         }
 
-        super.observe(owner, Observer { t ->
+        super.observe(owner, { t ->
             if (pending.compareAndSet(true, false)) {
                 observer.onChanged(t)
             }

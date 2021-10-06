@@ -26,7 +26,7 @@
     <string name="voter_address">Mailing Address</string>
     <string name="voter_no_app_to_open_link">No app to open the link</string>
 
-    <string name="representative_address_not_valid">Please, input address</string>
+    <string name="representative_address_not_valid">Please fill out all fields</string>
     <string name="representative_location_not_available">Location is not available</string>
     <string name="representatives_not_found">Representatives not found</string>
 
@@ -37,6 +37,11 @@
     <string name="error_couldnt_refresh_data">Couldn\'t refresh data</string>
 
     <string name="snackbar_permission_denied">Grant the location permission to use the device location.</string>
+    <string name="web_page_icon">Web page icon</string>
+    <string name="facebook_icon">Facebook icon</string>
+    <string name="twitter_icon">Twitter icon</string>
+    <string name="representative_photo">Representative photo</string>
+    <string name="image_no_data">Image no data</string>
 
 
 </resources>

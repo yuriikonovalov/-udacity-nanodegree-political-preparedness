@@ -24,7 +24,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_profile" />
+            tools:src="@drawable/ic_profile"
+            android:contentDescription="@string/representative_photo" />
 
 
         <TextView
@@ -70,7 +71,8 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/facebook_icon"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@string/web_page_icon" />
 
 
         <ImageView
@@ -82,7 +84,8 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/twitter_icon"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@string/facebook_icon" />
 
         <ImageView
             android:id="@+id/twitter_icon"
@@ -92,7 +95,8 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@string/twitter_icon" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
