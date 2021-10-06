@@ -36,5 +36,7 @@
     <string name="error_no_network_connection">No network connection!</string>
     <string name="error_couldnt_refresh_data">Couldn\'t refresh data</string>
 
+    <string name="snackbar_permission_denied">Grant the location permission to use the device location.</string>
+
 
 </resources>

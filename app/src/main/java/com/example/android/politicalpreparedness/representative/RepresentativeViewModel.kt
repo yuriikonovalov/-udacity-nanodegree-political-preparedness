@@ -11,7 +11,7 @@ import java.lang.Exception
 
 class RepresentativeViewModel(private val repository: Repository, application: Application) : AndroidViewModel(application) {
 
-    val _address = MutableLiveData<Address>()
+    private val _address = MutableLiveData<Address>()
     val address: LiveData<Address>
         get() = _address
 
@@ -50,6 +50,7 @@ class RepresentativeViewModel(private val repository: Repository, application: A
             }
         }
     }
+
 
     fun setLoadingState() {
         _representatives.value = Result.Loading

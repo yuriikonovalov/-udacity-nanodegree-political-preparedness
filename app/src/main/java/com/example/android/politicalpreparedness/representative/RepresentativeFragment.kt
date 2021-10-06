@@ -2,7 +2,9 @@ package com.example.android.politicalpreparedness.representative
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -11,10 +13,12 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.data.Result
@@ -22,10 +26,12 @@ import com.example.android.politicalpreparedness.databinding.FragmentRepresentat
 import com.example.android.politicalpreparedness.network.models.Address
 import com.example.android.politicalpreparedness.representative.adapter.RepresentativeListAdapter
 import com.example.android.politicalpreparedness.util.InternetConnection
-import com.example.android.politicalpreparedness.util.showNoInternetConnectionToast
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -38,6 +44,17 @@ class RepresentativeFragment : Fragment() {
             ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             loadRepresentativesWithDeviceLocation()
+        } else {
+            Snackbar.make(binding.root, getString(R.string.snackbar_permission_denied), Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private val requestLocationSettingsLauncher = registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            loadRepresentativesWithDeviceLocation(true)
+        } else {
+            showToastNoLocation()
         }
     }
 
@@ -84,6 +101,7 @@ class RepresentativeFragment : Fragment() {
         return binding.root
     }
 
+
     private fun loadRepresentativesWithEnteredData() {
         viewModel.setAddress(
                 binding.addressLine1.text.toString(),
@@ -101,20 +119,24 @@ class RepresentativeFragment : Fragment() {
         if (InternetConnection.isConnected(requireContext())) {
             viewModel.loadRepresentatives()
         } else {
-            showNoInternetConnectionToast(requireContext())
+            showToastNoInternetConnection()
         }
     }
 
-    private fun loadRepresentativesWithDeviceLocation() {
+    private fun loadRepresentativesWithDeviceLocation(isLocationOn: Boolean = false) {
         if (!isPermissionGranted()) {
             requestLocationPermission()
+            return
+        }
+        if (!isLocationOn) {
+            checkLocationSettings()
             return
         }
 
         if (InternetConnection.isConnected(requireContext())) {
             getLocationAndLoadRepresentatives()
         } else {
-            showNoInternetConnectionToast(requireContext())
+            showToastNoInternetConnection()
         }
 
     }
@@ -131,29 +153,54 @@ class RepresentativeFragment : Fragment() {
         )
     }
 
+    private fun checkLocationSettings() {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        }
+        val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+        val client = LocationServices.getSettingsClient(requireContext())
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            loadRepresentativesWithDeviceLocation(true)
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    val intentSenderRequest = IntentSenderRequest.Builder(exception.resolution).build()
+                    requestLocationSettingsLauncher.launch(intentSenderRequest)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // ignore
+                }
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun getLocationAndLoadRepresentatives() {
         // Show a loading indicator while getting location
         viewModel.setLoadingState()
 
-        val errorToast = Toast.makeText(requireContext(),
-                getString(R.string.representative_location_not_available), Toast.LENGTH_SHORT)
-
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        fusedLocationProviderClient.lastLocation
+        fusedLocationProviderClient.getCurrentLocation(
+                LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,
+                CancellationTokenSource().token
+        )
                 .addOnSuccessListener { location ->
                     if (location != null) {
                         val address = geoCodeLocation(location)
                         viewModel.setAddress(address)
                         viewModel.loadRepresentatives()
                     } else {
+                        showToastNoLocation()
                         viewModel.setErrorState()
-                        errorToast.show()
                     }
 
                 }
                 .addOnFailureListener {
-                    errorToast.show()
+                    showToastNoLocation()
                     viewModel.setErrorState()
                 }
 
@@ -181,5 +228,13 @@ class RepresentativeFragment : Fragment() {
         imm.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
 
+    private fun showToastNoLocation() {
+        Toast.makeText(requireContext(),
+                getString(R.string.representative_location_not_available), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showToastNoInternetConnection() {
+        Toast.makeText(requireContext(), getString(R.string.error_no_internet_connection), Toast.LENGTH_SHORT).show()
+    }
 
 }
