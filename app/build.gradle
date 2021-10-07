@@ -5,6 +5,9 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'androidx.navigation.safeargs'
 
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream((localPropertiesFile)))
 
 android {
     compileSdkVersion 30
@@ -19,7 +22,7 @@ android {
         versionName "1.0"
 
         // API Key
-        buildConfigField "String", "GOOGLE_CIVIC_INFORMATION_API_KEY", GOOGLE_CIVIC_INFORMATION_API_KEY
+        buildConfigField "String", "GOOGLE_CIVIC_INFORMATION_API_KEY", localProperties['GOOGLE_CIVIC_INFORMATION_API_KEY']
 
     }
     buildTypes {
