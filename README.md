@@ -26,7 +26,3 @@ To get started with this project, simply pull the repository and import the proj
 How to set own API key:
 * Open local.properties file in the root directory
 * Add a variable GOOGLE_CIVIC_INFORMATION_API_KEY = "Your_key_here" to the file
-
-
-## Report Issues
-Notice any issues with a repository? Please file a github issue in the repository.
